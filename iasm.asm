@@ -55,11 +55,9 @@ ReturnErrorCode MACRO
 	jz err2
 	xor eax,eax
 	ret
-
 err1:
 	mov eax,1
-	ret
-	
+	ret	
 err2:
 	mov eax,2
 	ret
@@ -164,16 +162,16 @@ _readLDTR ENDP
 
 _cpuid proc
 	push r8
-    mov r8,rcx
+    	mov r8,rcx
 	mov rax,[r8+GUEST_RAX]
 	mov rcx,[r8+GUEST_RCX]
-    cpuid
-    mov [r8+GUEST_RAX],rax
-    mov [r8+GUEST_RCX],rcx
-    mov [r8+GUEST_RDX],rdx
-    mov [r8+GUEST_RBX],rbx
+    	cpuid
+    	mov [r8+GUEST_RAX],rax
+    	mov [r8+GUEST_RCX],rcx
+    	mov [r8+GUEST_RDX],rdx
+    	mov [r8+GUEST_RBX],rbx
 	pop r8
-    ret
+    	ret
 _cpuid endp
 
 _readmsr proc
@@ -187,12 +185,6 @@ _readmsr proc
     ret
 _readmsr endp
 
-_readmsr2 proc
-	rdmsr
-	shl rdx,32
-	or rax,rdx
-	ret
-_readmsr2 endp
 
 _writemsr proc
 	push r8
@@ -204,14 +196,6 @@ _writemsr proc
 	pop r8
     ret
 _writemsr endp
-
-_writemsr2 proc
-	mov rax,rdx
-	shr rdx,32
-	wrmsr
-	ret
-_writemsr2 endp
-
 
 _rdtsc proc
 	push r8
@@ -256,31 +240,13 @@ _invd proc
 	ret
 _invd endp
 
-_BTS proc
-	bts [rcx],rdx
-	ret
-_BTS endp
-
-_BTR proc
-	btr [rcx],rdx
-	ret
-_BTR endp
-
-_vmcall proc
-	vmcall
-	ret
-_vmcall endp
-
-_invlpg proc
-	invlpg byte ptr[rcx]
-_invlpg endp
 
 _StartVM proc
 	pushfq
 	pushaq	
 	
 	sub rsp,20h
-	mov r8,rsp					;GuestRsp	
+	mov r8,rsp			;GuestRsp	
 	mov rdx,offset returnAddr	;GuestRip	
 	call StartVM
 
@@ -335,19 +301,6 @@ leave_vmx:
 	jmp rax
 	int 3
 _HostEntry ENDP
-
-
-
-;此函数是CR3挂靠,并开启内存读写
-_TargetProcess proc	
-	mov rax,cr3
-	mov rcx,[rcx+28h]
-	mov cr3,rcx	
-	stac	
-	ret
-_TargetProcess endp
-
-
 
 vmx_write PROC
 	vmwrite rcx,rdx
